@@ -10,10 +10,27 @@ repositories {
 }
 
 dependencies {
+    implementation files(projectDir.toPath().toString() + '/lib/core-0.1-SNAPSHOT.jar')
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    destinationDirectory.set(file(projectDir.toPath().toString() + '/CLI dir'))
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    //exclude ("log4j2.xml")
+    manifest {
+        attributes (
+                "Main-Class": "com.zeromb.gostock.GoStockCLI")
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
