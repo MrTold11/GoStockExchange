@@ -1,1 +1,1 @@
-# auth microservice which is used for logging in and getting auth token
+# Auth microservice which is used for logging in and getting auth token

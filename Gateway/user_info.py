@@ -1,1 +1,1 @@
-# microservice which is used for retreeving users' portfolios from Users DB  
+#  User portfolios from Users DB retreeving microservice 

@@ -1,0 +1,1 @@
+# Sends to dispatcher user requests and forwards replies(request approwed/dismissed) back to them using kafka
