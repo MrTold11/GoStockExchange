@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+
+service FEService {
+  rpc GetStocksList(Empty) returns (StocksList) {};
+  rpc GetCurrentPrice(ISIN) returns (StockPrice) {};
+  rpc GetOpeningPrice(ISIN) returns (StockPrice) {};
+  rpc GetPortfolio(Token) returns (Portfolio) {};
+  rpc PlaceOrder(Order) returns (Empty) {};
+  rpc CancelOrder(CancelOrderRequest) returns (Empty) {};
+}
+
+message Empty {}
+
+message StocksList {
+  repeated Stock stocks = 1;
+}
+
+message Stock {
+  string ISIN = 1;
+  string tiker = 2;
+  string full_name = 3;
+  string about = 4;
+}
+
+message ISIN {
+  string ISIN = 1;
+}
+
+message StockPrice {
+  double price = 1;
+}
+
+message Token {
+  string token = 1;
+}
+
+message Portfolio {
+  repeated Asset assets = 1;
+}
+
+message Asset {
+  string ISIN = 1;
+  int32 amount = 2;
+  double price = 3;
+}
+
+message Order {
+  string token = 1;
+  Asset asset = 2;
+  OrderType type = 3;
+  bool is_buy = 4;    
+}
+
+enum OrderType {
+  UNSPECIFIED = 0;
+  MARKET = 1;
+  LIMIT = 2;
+}
+
+message CancelOrderRequest {
+  string token = 1;
+  uint64 order_id = 2;
+}
