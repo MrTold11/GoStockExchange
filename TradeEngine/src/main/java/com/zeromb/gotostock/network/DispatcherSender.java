@@ -9,7 +9,6 @@ import io.grpc.ManagedChannelBuilder;
  */
 public class DispatcherSender {
 
-    private final DispatcherGatewayGrpc.DispatcherGatewayBlockingStub blockingStub;
     private final DispatcherGatewayGrpc.DispatcherGatewayStub asyncStub;
 
     ManagedChannel channel;
@@ -21,7 +20,6 @@ public class DispatcherSender {
     /** Construct client for accessing RouteGuide server using the existing channel. */
     public DispatcherSender(ManagedChannelBuilder<?> channelBuilder) {
         channel = channelBuilder.build();
-        blockingStub = DispatcherGatewayGrpc.newBlockingStub(channel);
         asyncStub = DispatcherGatewayGrpc.newStub(channel);
 
     }

@@ -67,15 +67,6 @@ public class DispatcherServer {
     }
 
     /**
-     * Main method.  This comment makes the linter happy.
-     */
-    public static void main(String[] args) throws Exception {
-        DispatcherServer server = new DispatcherServer(8980);
-        server.start();
-        server.blockUntilShutdown();
-    }
-
-    /**
      * Our implementation of RouteGuide service.
      *
      * <p>See route_guide.proto for details of the methods.

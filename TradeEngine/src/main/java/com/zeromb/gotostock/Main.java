@@ -9,8 +9,7 @@ import java.io.IOException;
  */
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-
-        DispatcherServer server = new DispatcherServer(8980);
+        DispatcherServer server = new DispatcherServer(50150);
         server.start();
         server.blockUntilShutdown();
     }

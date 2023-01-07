@@ -1,6 +1,7 @@
 package com.zeromb.gotostock.trade;
 
 import com.zeromb.gotostock.Gateway;
+import com.zeromb.gotostock.network.DispatcherSender;
 import com.zeromb.gotostock.trade.obj.DenyReason;
 import com.zeromb.gotostock.trade.obj.Order;
 import com.zeromb.gotostock.trade.obj.Stock;
@@ -19,6 +20,8 @@ public class Dispatcher {
     TradeEngine tradeEngine;
 
     Queue<Order> resultOrders = new ConcurrentLinkedQueue<>();
+
+    DispatcherSender sender = new DispatcherSender("192.168.0.1", 50050);
 
     private final Map<String, Stock> stockMap = new HashMap<>();
 

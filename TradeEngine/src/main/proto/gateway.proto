@@ -1,6 +1,10 @@
 syntax = "proto3";
 option java_package = "com.zeromb.gotostock";
 
+service GatewayReceiver {
+  rpc SendOrderStatus(OrderStatus) returns (Empty) {};
+}
+
 service DispatcherGateway {
   rpc GetCurrentPrice(ISIN) returns (StockPrice) {};
   rpc GetOpeningPrice(ISIN) returns (StockPrice) {};
@@ -40,4 +44,17 @@ enum OrderType {
 message CancelOrderRequest {
   string token = 1;
   uint64 order_id = 2;
+}
+
+message Transaction {
+  double price = 1;
+  int32 amount = 2;
+}
+
+message OrderStatus {
+  string token = 1;
+  Asset asset = 2;
+  bool is_buy = 3;
+  int64 order_id = 4;
+  repeated Transaction transactions = 5;
 }
