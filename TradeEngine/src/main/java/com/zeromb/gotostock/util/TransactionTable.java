@@ -7,7 +7,7 @@ public class TransactionTable {
 
     double[] keys;
     int[] values;
-    int c_pos, pos;
+    int a_pos, b_pos, pos;
 
     public TransactionTable(int size) {
         keys = new double[size];
@@ -27,7 +27,8 @@ public class TransactionTable {
 
     public void commit() {
         pos++;
-        c_pos = pos;
+        a_pos = b_pos;
+        b_pos = pos;
     }
 
     public double[] getKeys() {
@@ -38,8 +39,12 @@ public class TransactionTable {
         return values;
     }
 
-    public int getC_pos() {
-        return c_pos;
+    public int getA_pos() {
+        return a_pos;
+    }
+
+    public int getB_pos() {
+        return b_pos;
     }
 
     public int getPos() {

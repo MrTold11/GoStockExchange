@@ -89,11 +89,13 @@ public class Dispatcher {
     }
 
     public void sendOrderStatus(Order order) {
+        TransactionTable table = order.getTable();
+        table.commit();
+
         executors.submit(() -> {
-            TransactionTable table = order.getTable();
             Set<Gateway.Transaction> transactionSet = new HashSet<>();
 
-            for (int i = table.getC_pos(); i <= table.getPos(); i++) {
+            for (int i = table.getA_pos(); i < table.getB_pos(); i++) {
                 transactionSet.add(Gateway.Transaction.newBuilder()
                         .setPrice(table.getKeys()[i])
                         .setAmount(table.getValues()[i])
