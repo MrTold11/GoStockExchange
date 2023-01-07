@@ -2,10 +2,12 @@
 
 from concurrent import futures
 import grpc
-import FE_pb2
-import FE_pb2_grpc
+import FE_pb2, FE_pb2_grpc
+import dispatcher_pb2, dispatcher_pb2_grpc
 import psycopg2
 import asyncio
+
+GATEWAY_PORT = "50051"
 
 DB_NAME = "postgres"
 DB_USER = "postgres"
@@ -13,14 +15,17 @@ DB_PASSWORD = "12345678"
 DB_HOST = "192.168.1.122"
 DB_PORT = "5433"
 
+DISPATCHER_HOST = "192.168.1.147"
+DISPATCHER_PORT = "50150"
 
 class AsyncFEServicer(FE_pb2_grpc.FEServiceServicer):
-    def __init__(self, cur) -> None:
+    def __init__(self, cur, stub:dispatcher_pb2_grpc.DispatcherGatewayStub) -> None:
         super().__init__()
         self.opening_prices = dict()
         self.current_prices = dict()
         self.issued_tokens = dict()
         self.cur = cur
+        self.stub = stub
         self.columns = []
 
         self.update_columns()
@@ -53,11 +58,12 @@ class AsyncFEServicer(FE_pb2_grpc.FEServiceServicer):
         return FE_pb2.StocksList(stocks=stocks_list)
     
     async def GetCurrentPrice(self, request, context):
-        if request in self.current_prices:
-            return self.current_prices[request] # updates when passing back to client OrderStatus
+        isin = request.isin
+        if isin in self.current_prices:
+            return FE_pb2.StockPrice(price=self.current_prices[isin]) # updates when passing back to client OrderStatus
         
-        cur_price = 0 # grpc request to dispatcher to get price of latest transaction involving stocks with given isin
-        self.current_prices[request] = cur_price
+        cur_price = self.stub.GetCurrentPrice(request) # grpc request to dispatcher to get price of latest transaction involving stocks with given isin
+        self.current_prices[isin] = cur_price.price
         return cur_price
         
     async def GetOpeningPrice(self, request, context):
@@ -97,14 +103,20 @@ class AsyncFEServicer(FE_pb2_grpc.FEServiceServicer):
         if user_id is not None:
             pass # redirect CancelOrder to dispatcher via grpc to check if user with user_id has an order with request.order_id
 
+    async def SendOrderStatus(self, request, context):
+        print("Recieved OrderStatus from dispatcher: ", request)
+        return dispatcher_pb2.Empty()
 
-async def serve():
+async def serve_FE():
     conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT)
     cur = conn.cursor()
 
+    channel = grpc.insecure_channel(f"{DISPATCHER_HOST}:{DISPATCHER_PORT}")
+    stub = dispatcher_pb2_grpc.DispatcherGatewayStub(channel)
+
     server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=10))
-    FE_pb2_grpc.add_FEServiceServicer_to_server(AsyncFEServicer(cur=cur), server)
-    server.add_insecure_port('[::]:50051')
+    FE_pb2_grpc.add_FEServiceServicer_to_server(AsyncFEServicer(cur=cur, stub=stub), server)
+    server.add_insecure_port(f"[::]:{GATEWAY_PORT}")
     
     await server.start()
     await server.wait_for_termination()
@@ -115,4 +127,7 @@ async def serve():
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(serve())
+    try:
+        loop.run_until_complete(serve_FE())
+    finally:
+        loop.close()
