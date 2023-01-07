@@ -10,14 +10,14 @@ MARKET: OrderType
 UNSPECIFIED: OrderType
 
 class Asset(_message.Message):
-    __slots__ = ["ISIN", "amount", "price"]
+    __slots__ = ["amount", "isin", "price"]
     AMOUNT_FIELD_NUMBER: _ClassVar[int]
-    ISIN: str
     ISIN_FIELD_NUMBER: _ClassVar[int]
     PRICE_FIELD_NUMBER: _ClassVar[int]
     amount: int
+    isin: str
     price: float
-    def __init__(self, ISIN: _Optional[str] = ..., amount: _Optional[int] = ..., price: _Optional[float] = ...) -> None: ...
+    def __init__(self, isin: _Optional[str] = ..., amount: _Optional[int] = ..., price: _Optional[float] = ...) -> None: ...
 
 class CancelOrderRequest(_message.Message):
     __slots__ = ["order_id", "token"]
@@ -32,10 +32,10 @@ class Empty(_message.Message):
     def __init__(self) -> None: ...
 
 class ISIN(_message.Message):
-    __slots__ = ["ISIN"]
-    ISIN: str
+    __slots__ = ["isin"]
     ISIN_FIELD_NUMBER: _ClassVar[int]
-    def __init__(self, ISIN: _Optional[str] = ...) -> None: ...
+    isin: str
+    def __init__(self, isin: _Optional[str] = ...) -> None: ...
 
 class Order(_message.Message):
     __slots__ = ["asset", "is_buy", "token", "type"]
@@ -56,16 +56,16 @@ class Portfolio(_message.Message):
     def __init__(self, assets: _Optional[_Iterable[_Union[Asset, _Mapping]]] = ...) -> None: ...
 
 class Stock(_message.Message):
-    __slots__ = ["ISIN", "about", "full_name", "ticker"]
+    __slots__ = ["about", "full_name", "isin", "ticker"]
     ABOUT_FIELD_NUMBER: _ClassVar[int]
     FULL_NAME_FIELD_NUMBER: _ClassVar[int]
-    ISIN: str
     ISIN_FIELD_NUMBER: _ClassVar[int]
     TICKER_FIELD_NUMBER: _ClassVar[int]
     about: str
     full_name: str
+    isin: str
     ticker: str
-    def __init__(self, ISIN: _Optional[str] = ..., ticker: _Optional[str] = ..., full_name: _Optional[str] = ..., about: _Optional[str] = ...) -> None: ...
+    def __init__(self, isin: _Optional[str] = ..., ticker: _Optional[str] = ..., full_name: _Optional[str] = ..., about: _Optional[str] = ...) -> None: ...
 
 class StockPrice(_message.Message):
     __slots__ = ["price"]

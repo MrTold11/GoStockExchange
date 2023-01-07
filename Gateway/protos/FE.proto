@@ -17,14 +17,14 @@ message StocksList {
 }
 
 message Stock {
-  string ISIN = 1;
+  string isin = 1;
   string ticker = 2;
   string full_name = 3;
   string about = 4;
 }
 
 message ISIN {
-  string ISIN = 1;
+  string isin = 1;
 }
 
 message StockPrice {
@@ -40,7 +40,7 @@ message Portfolio {
 }
 
 message Asset {
-  string ISIN = 1;
+  string isin = 1;
   int32 amount = 2;
   double price = 3;
 }
