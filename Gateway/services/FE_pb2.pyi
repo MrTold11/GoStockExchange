@@ -56,16 +56,16 @@ class Portfolio(_message.Message):
     def __init__(self, assets: _Optional[_Iterable[_Union[Asset, _Mapping]]] = ...) -> None: ...
 
 class Stock(_message.Message):
-    __slots__ = ["ISIN", "about", "full_name", "tiker"]
+    __slots__ = ["ISIN", "about", "full_name", "ticker"]
     ABOUT_FIELD_NUMBER: _ClassVar[int]
     FULL_NAME_FIELD_NUMBER: _ClassVar[int]
     ISIN: str
     ISIN_FIELD_NUMBER: _ClassVar[int]
-    TIKER_FIELD_NUMBER: _ClassVar[int]
+    TICKER_FIELD_NUMBER: _ClassVar[int]
     about: str
     full_name: str
-    tiker: str
-    def __init__(self, ISIN: _Optional[str] = ..., tiker: _Optional[str] = ..., full_name: _Optional[str] = ..., about: _Optional[str] = ...) -> None: ...
+    ticker: str
+    def __init__(self, ISIN: _Optional[str] = ..., ticker: _Optional[str] = ..., full_name: _Optional[str] = ..., about: _Optional[str] = ...) -> None: ...
 
 class StockPrice(_message.Message):
     __slots__ = ["price"]

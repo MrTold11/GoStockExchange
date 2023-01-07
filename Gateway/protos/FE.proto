@@ -18,7 +18,7 @@ message StocksList {
 
 message Stock {
   string ISIN = 1;
-  string tiker = 2;
+  string ticker = 2;
   string full_name = 3;
   string about = 4;
 }
