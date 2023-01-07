@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import grpc_pb2 as grpc__pb2
+import FE_pb2 as FE__pb2
 
 
 class FEServiceStub(object):
@@ -16,33 +16,33 @@ class FEServiceStub(object):
         """
         self.GetStocksList = channel.unary_unary(
                 '/FEService/GetStocksList',
-                request_serializer=grpc__pb2.Empty.SerializeToString,
-                response_deserializer=grpc__pb2.StocksList.FromString,
+                request_serializer=FE__pb2.Empty.SerializeToString,
+                response_deserializer=FE__pb2.StocksList.FromString,
                 )
         self.GetCurrentPrice = channel.unary_unary(
                 '/FEService/GetCurrentPrice',
-                request_serializer=grpc__pb2.ISIN.SerializeToString,
-                response_deserializer=grpc__pb2.StockPrice.FromString,
+                request_serializer=FE__pb2.ISIN.SerializeToString,
+                response_deserializer=FE__pb2.StockPrice.FromString,
                 )
         self.GetOpeningPrice = channel.unary_unary(
                 '/FEService/GetOpeningPrice',
-                request_serializer=grpc__pb2.ISIN.SerializeToString,
-                response_deserializer=grpc__pb2.StockPrice.FromString,
+                request_serializer=FE__pb2.ISIN.SerializeToString,
+                response_deserializer=FE__pb2.StockPrice.FromString,
                 )
         self.GetPortfolio = channel.unary_unary(
                 '/FEService/GetPortfolio',
-                request_serializer=grpc__pb2.Token.SerializeToString,
-                response_deserializer=grpc__pb2.Portfolio.FromString,
+                request_serializer=FE__pb2.Token.SerializeToString,
+                response_deserializer=FE__pb2.Portfolio.FromString,
                 )
         self.PlaceOrder = channel.unary_unary(
                 '/FEService/PlaceOrder',
-                request_serializer=grpc__pb2.Order.SerializeToString,
-                response_deserializer=grpc__pb2.Empty.FromString,
+                request_serializer=FE__pb2.Order.SerializeToString,
+                response_deserializer=FE__pb2.Empty.FromString,
                 )
         self.CancelOrder = channel.unary_unary(
                 '/FEService/CancelOrder',
-                request_serializer=grpc__pb2.CancelOrderRequest.SerializeToString,
-                response_deserializer=grpc__pb2.Empty.FromString,
+                request_serializer=FE__pb2.CancelOrderRequest.SerializeToString,
+                response_deserializer=FE__pb2.Empty.FromString,
                 )
 
 
@@ -90,33 +90,33 @@ def add_FEServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetStocksList': grpc.unary_unary_rpc_method_handler(
                     servicer.GetStocksList,
-                    request_deserializer=grpc__pb2.Empty.FromString,
-                    response_serializer=grpc__pb2.StocksList.SerializeToString,
+                    request_deserializer=FE__pb2.Empty.FromString,
+                    response_serializer=FE__pb2.StocksList.SerializeToString,
             ),
             'GetCurrentPrice': grpc.unary_unary_rpc_method_handler(
                     servicer.GetCurrentPrice,
-                    request_deserializer=grpc__pb2.ISIN.FromString,
-                    response_serializer=grpc__pb2.StockPrice.SerializeToString,
+                    request_deserializer=FE__pb2.ISIN.FromString,
+                    response_serializer=FE__pb2.StockPrice.SerializeToString,
             ),
             'GetOpeningPrice': grpc.unary_unary_rpc_method_handler(
                     servicer.GetOpeningPrice,
-                    request_deserializer=grpc__pb2.ISIN.FromString,
-                    response_serializer=grpc__pb2.StockPrice.SerializeToString,
+                    request_deserializer=FE__pb2.ISIN.FromString,
+                    response_serializer=FE__pb2.StockPrice.SerializeToString,
             ),
             'GetPortfolio': grpc.unary_unary_rpc_method_handler(
                     servicer.GetPortfolio,
-                    request_deserializer=grpc__pb2.Token.FromString,
-                    response_serializer=grpc__pb2.Portfolio.SerializeToString,
+                    request_deserializer=FE__pb2.Token.FromString,
+                    response_serializer=FE__pb2.Portfolio.SerializeToString,
             ),
             'PlaceOrder': grpc.unary_unary_rpc_method_handler(
                     servicer.PlaceOrder,
-                    request_deserializer=grpc__pb2.Order.FromString,
-                    response_serializer=grpc__pb2.Empty.SerializeToString,
+                    request_deserializer=FE__pb2.Order.FromString,
+                    response_serializer=FE__pb2.Empty.SerializeToString,
             ),
             'CancelOrder': grpc.unary_unary_rpc_method_handler(
                     servicer.CancelOrder,
-                    request_deserializer=grpc__pb2.CancelOrderRequest.FromString,
-                    response_serializer=grpc__pb2.Empty.SerializeToString,
+                    request_deserializer=FE__pb2.CancelOrderRequest.FromString,
+                    response_serializer=FE__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -140,8 +140,8 @@ class FEService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/FEService/GetStocksList',
-            grpc__pb2.Empty.SerializeToString,
-            grpc__pb2.StocksList.FromString,
+            FE__pb2.Empty.SerializeToString,
+            FE__pb2.StocksList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -157,8 +157,8 @@ class FEService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/FEService/GetCurrentPrice',
-            grpc__pb2.ISIN.SerializeToString,
-            grpc__pb2.StockPrice.FromString,
+            FE__pb2.ISIN.SerializeToString,
+            FE__pb2.StockPrice.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -174,8 +174,8 @@ class FEService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/FEService/GetOpeningPrice',
-            grpc__pb2.ISIN.SerializeToString,
-            grpc__pb2.StockPrice.FromString,
+            FE__pb2.ISIN.SerializeToString,
+            FE__pb2.StockPrice.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -191,8 +191,8 @@ class FEService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/FEService/GetPortfolio',
-            grpc__pb2.Token.SerializeToString,
-            grpc__pb2.Portfolio.FromString,
+            FE__pb2.Token.SerializeToString,
+            FE__pb2.Portfolio.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -208,8 +208,8 @@ class FEService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/FEService/PlaceOrder',
-            grpc__pb2.Order.SerializeToString,
-            grpc__pb2.Empty.FromString,
+            FE__pb2.Order.SerializeToString,
+            FE__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -225,7 +225,7 @@ class FEService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/FEService/CancelOrder',
-            grpc__pb2.CancelOrderRequest.SerializeToString,
-            grpc__pb2.Empty.FromString,
+            FE__pb2.CancelOrderRequest.SerializeToString,
+            FE__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
