@@ -31,7 +31,8 @@ public class Order implements Comparable<Order> {
         this.orderAmount = order.getAsset().getAmount();
         this.leftAmount = orderAmount;
         this.type = order.getType() == Gateway.OrderType.LIMIT;
-        this.price = type ? order.getAsset().getPrice() : stock.getPrice();
+        this.price = type ? order.getAsset().getPrice() :
+                stock != null ? stock.getPrice() : 0D;
         this.isBuy = order.getIsBuy();
         this.timestamp = Dispatcher.getUniqueTimestamp();
 

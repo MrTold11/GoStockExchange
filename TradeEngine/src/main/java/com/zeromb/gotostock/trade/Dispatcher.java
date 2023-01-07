@@ -52,30 +52,23 @@ public class Dispatcher {
     }
 
     public void placeOrder(Gateway.Order order) {
-        if (order.getAsset().getAmount() <= 0) {
-            denyOrder(order, DenyReason.INCORRECT_AMOUNT);
+        Order order1 = new Order(order,
+                stockMap.get(order.getAsset().getISIN()));
+
+        if (order1.getStock() == null) {
+            denyOrder(order1, DenyReason.STOCK_NOT_FOUND);
             return;
         }
 
-        if (order.getType() == Gateway.OrderType.LIMIT
-                && order.getAsset().getPrice() <= 0) {
-            denyOrder(order, DenyReason.INCORRECT_PRICE);
+        if (order1.getOrderAmount() <= 0) {
+            denyOrder(order1, DenyReason.INCORRECT_AMOUNT);
             return;
         }
 
-        if (order.getType() != Gateway.OrderType.MARKET
-            && order.getType() != Gateway.OrderType.LIMIT) {
-            denyOrder(order, DenyReason.INCORRECT_TYPE);
+        if (order1.isType() && order1.getPrice() <= 0) {
+            denyOrder(order1, DenyReason.INCORRECT_PRICE);
             return;
         }
-
-        Stock stock = stockMap.get(order.getAsset().getISIN());
-        if (stock == null) {
-            denyOrder(order, DenyReason.STOCK_NOT_FOUND);
-            return;
-        }
-
-        Order order1 = new Order(order, stock);
 
         tradeEngine.inputOrders.add(order1);
     }
@@ -84,8 +77,22 @@ public class Dispatcher {
 
     }
 
-    private void denyOrder(Gateway.Order order, DenyReason reason) {
-
+    private void denyOrder(Order order, DenyReason reason) {
+        executors.submit(() -> {
+            Gateway.OrderStatus status =
+                    Gateway.OrderStatus.newBuilder()
+                            .setStatus(Gateway.OStatus.DENIED)
+                            .setToken(order.getUid())
+                            .setOrderId(order.getTimestamp())
+                            .setIsBuy(order.isBuy())
+                            .setAsset(Gateway.Asset.newBuilder()
+                                    .setISIN(order.getISIN())
+                                    .setAmount(order.getLeftAmount())
+                                    .setPrice(order.getPrice())
+                                    .build())
+                            .build();
+            sender.sendResult(status);
+        });
     }
 
     public void sendOrderStatus(Order order) {
@@ -104,6 +111,7 @@ public class Dispatcher {
 
             Gateway.OrderStatus status =
                     Gateway.OrderStatus.newBuilder()
+                            .setStatus(Gateway.OStatus.OK)
                             .setToken(order.getUid())
                             .setOrderId(order.getTimestamp())
                             .setIsBuy(order.isBuy())

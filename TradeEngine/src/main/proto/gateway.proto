@@ -51,10 +51,17 @@ message Transaction {
   int32 amount = 2;
 }
 
+enum OStatus {
+  OK = 0;
+  CANCELLED = 1;
+  DENIED = 2;
+}
+
 message OrderStatus {
-  string token = 1;
-  Asset asset = 2;
-  bool is_buy = 3;
-  int64 order_id = 4;
-  repeated Transaction transactions = 5;
+  OStatus status = 1;
+  string token = 2;
+  Asset asset = 3;
+  bool is_buy = 4;
+  int64 order_id = 5;
+  repeated Transaction transactions = 6;
 }
