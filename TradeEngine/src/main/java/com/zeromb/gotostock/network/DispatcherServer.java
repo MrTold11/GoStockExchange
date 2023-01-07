@@ -19,8 +19,8 @@ public class DispatcherServer {
 
     private final Server server;
 
-    public DispatcherServer(int port) {
-        this(port, new Dispatcher());
+    public DispatcherServer(String gatewayIp, int gatewayPort, int selfPort) {
+        this(selfPort, new Dispatcher(gatewayIp, gatewayPort));
     }
 
     /** Create a RouteGuide server listening on {@code port} using {@code featureFile} database. */

@@ -74,7 +74,7 @@ public class TradeEngine extends Thread {
 
     private void sendOrder(Order order) {
         //change users actives
-        dispatcher.resultOrders.add(order);
+        dispatcher.sendOrderStatus(order);
     }
 
 }

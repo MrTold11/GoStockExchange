@@ -5,11 +5,14 @@ import com.zeromb.gotostock.network.DispatcherSender;
 import com.zeromb.gotostock.trade.obj.DenyReason;
 import com.zeromb.gotostock.trade.obj.Order;
 import com.zeromb.gotostock.trade.obj.Stock;
+import com.zeromb.gotostock.util.TransactionTable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -17,19 +20,20 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class Dispatcher {
 
+    DispatcherSender sender;
+
     TradeEngine tradeEngine;
 
-    Queue<Order> resultOrders = new ConcurrentLinkedQueue<>();
-
-    DispatcherSender sender = new DispatcherSender("192.168.0.1", 50050);
+    ExecutorService executors = Executors.newFixedThreadPool(10);
 
     private final Map<String, Stock> stockMap = new HashMap<>();
 
     private final Map<String, Gateway.StockPrice> openingPrices = new HashMap<>();
     private final Gateway.StockPrice ZERO = Gateway.StockPrice.newBuilder().setPrice(0.0D).build();
 
-    public Dispatcher() {
+    public Dispatcher(String gatewayIp, int gatewayPort) {
         tradeEngine = new TradeEngine(this);
+        sender = new DispatcherSender(gatewayIp, gatewayPort);
 
         //prepare stocks
         addStock(new Stock("RU0000000001", 99.9D, 145.4D));
@@ -43,6 +47,8 @@ public class Dispatcher {
 
         //prepare users
 
+        //launch
+        tradeEngine.start();
     }
 
     public void placeOrder(Gateway.Order order) {
@@ -80,6 +86,34 @@ public class Dispatcher {
 
     private void denyOrder(Gateway.Order order, DenyReason reason) {
 
+    }
+
+    public void sendOrderStatus(Order order) {
+        executors.submit(() -> {
+            TransactionTable table = order.getTable();
+            Set<Gateway.Transaction> transactionSet = new HashSet<>();
+
+            for (int i = table.getC_pos(); i <= table.getPos(); i++) {
+                transactionSet.add(Gateway.Transaction.newBuilder()
+                        .setPrice(table.getKeys()[i])
+                        .setAmount(table.getValues()[i])
+                        .build());
+            }
+
+            Gateway.OrderStatus status =
+                    Gateway.OrderStatus.newBuilder()
+                            .setToken(order.getUid())
+                            .setOrderId(order.getTimestamp())
+                            .setIsBuy(order.isBuy())
+                            .setAsset(Gateway.Asset.newBuilder()
+                                    .setISIN(order.getISIN())
+                                    .setAmount(order.getLeftAmount())
+                                    .setPrice(order.getPrice())
+                                    .build())
+                            .addAllTransactions(transactionSet)
+                            .build();
+            sender.sendResult(status);
+        });
     }
 
     public void addStock(Stock stock) {

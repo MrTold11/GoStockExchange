@@ -30,4 +30,19 @@ public class TransactionTable {
         c_pos = pos;
     }
 
+    public double[] getKeys() {
+        return keys;
+    }
+
+    public int[] getValues() {
+        return values;
+    }
+
+    public int getC_pos() {
+        return c_pos;
+    }
+
+    public int getPos() {
+        return pos;
+    }
 }
