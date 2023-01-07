@@ -5,6 +5,7 @@ import ru.congas.core.output.modifier.Style;
 import ru.congas.core.output.widgets.TextView;
 import ru.congas.core.output.widgets.Widget;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import java.util.List;
  */
 public class LineView extends Widget {
 
-    Style style;
     List<TextView> views = new LinkedList<>();
     String separator = " ";
 
@@ -21,8 +21,10 @@ public class LineView extends Widget {
     Style[] finalStyle;
     boolean dirty = true;
 
-    public LineView(Style style) {
-        this.style = style;
+    public LineView addAll(TextView... view) {
+        views.addAll(List.of(view));
+        dirty = true;
+        return this;
     }
 
     public LineView addView(TextView view) {

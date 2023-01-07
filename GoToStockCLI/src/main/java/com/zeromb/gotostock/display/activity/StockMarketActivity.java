@@ -9,7 +9,7 @@ import ru.congas.core.application.Bundle;
 /**
  * @author Mr_Told
  */
-public class StockListActivity extends ExchangeTabActivity {
+public class StockMarketActivity extends ExchangeTabActivity {
 
     MarketView marketView = new MarketView(exchange);
 

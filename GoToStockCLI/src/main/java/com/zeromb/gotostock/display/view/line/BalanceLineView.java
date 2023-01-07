@@ -17,15 +17,14 @@ public class BalanceLineView extends LineView {
     boolean dayDelta;
 
     TextView nameView = new TextView("Total:", null);
-    TextView priceValue = new TextView("xxx,xx GTB", null);
+    TextView priceValue = new TextView("???,?? GTB", null);
     TextView priceValueSep = new TextView("|", null);
-    TextView priceDeltaVal = new TextView("+ 0 GTB", null);
+    TextView priceDeltaVal = new TextView("+ ? GTB", null);
     TextView priceDeltaSep = new TextView("/", null);
-    TextView priceDeltaPer = new TextView("0,00 %", null);
+    TextView priceDeltaPer = new TextView("?,?? %", null);
     TextView priceDeltaTime = new TextView("за все время", null);
 
     public BalanceLineView(Portfolio portfolio) {
-        super(null);
         this.portfolio = portfolio;
 
         addView(nameView).addView(priceValue).addView(priceValueSep)
