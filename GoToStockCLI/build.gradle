@@ -10,8 +10,16 @@ repositories {
 }
 
 dependencies {
+    //Congas Core
     implementation files(projectDir.toPath().toString() + '/lib/core-0.1-SNAPSHOT.jar')
 
+    //gRPC
+    runtimeOnly 'io.grpc:grpc-netty-shaded:1.51.0'
+    implementation 'io.grpc:grpc-protobuf:1.51.0'
+    implementation 'io.grpc:grpc-stub:1.51.0'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+
+    //Tests
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }

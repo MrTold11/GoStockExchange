@@ -9,6 +9,7 @@ import ru.congas.core.input.keys.KeyPressed;
 import ru.congas.core.output.modifier.Color;
 import ru.congas.core.output.modifier.Style;
 import ru.congas.core.output.widgets.TextView;
+import ru.congas.core.output.widgets.properties.Gravity;
 
 /**
  * @author Mr_Told
@@ -17,7 +18,7 @@ public class StockInfoActivity extends PageActivity {
 
     Stock stock;
 
-    TextView labelView;
+    TextView labelView, hintView;
     StockLineView lineView;
     OwnedStockInfoView stockOwnInfo;
 
@@ -40,10 +41,13 @@ public class StockInfoActivity extends PageActivity {
                 .addView(new TextView(stock.getOpenMarketPrice() + " GTB", new Style().setForeground(Color.WHITE)));
         stockOwnInfo = new OwnedStockInfoView(stock);
 
+        hintView = new TextView("Use ARROWS to navigate/select, press ENTER to process, ESC to go back",
+                new Style().setBackground(Color.GRAY));
 
         addWidget(labelView).pos().setOffset(2, 1);
         addWidget(lineView).pos().setOffset(4, 3);
         addWidget(stockOwnInfo).pos().setOffset(4, 5);
+        addWidget(hintView).pos().setGravity(Gravity.leftBottom);
 
         update();
         render();
@@ -63,9 +67,10 @@ public class StockInfoActivity extends PageActivity {
     @Override
     public boolean handle(KeyPressed event) {
         switch (event.getDefinedKey()) {
-            case ESCAPE:
+            case ESCAPE -> {
                 closeActivity();
                 return true;
+            }
         }
         return super.handle(event);
     }
