@@ -1,8 +1,8 @@
 package com.zeromb.gotostock.display.activity.tab;
 
 import com.zeromb.gotostock.display.activity.PortfolioActivity;
-import com.zeromb.gotostock.display.activity.StockActivity;
-import com.zeromb.gotostock.display.activity.StockListActivity;
+import com.zeromb.gotostock.display.activity.StockInfoActivity;
+import com.zeromb.gotostock.display.activity.StockMarketActivity;
 import com.zeromb.gotostock.display.view.group.StockView;
 import com.zeromb.gotostock.display.view.line.LineView;
 import com.zeromb.gotostock.display.view.line.stock.StockLineView;
@@ -29,11 +29,11 @@ public abstract class ExchangeTabActivity extends PageActivity {
 
     private static final Map<Class<? extends ExchangeTabActivity>, ActivityTab> tabs = new HashMap<>();
 
-    private static final LineView tabsView = new LineView(null);
+    private static final LineView tabsView = new LineView();
 
     static {
-        addTab(new ActivityTab(PortfolioActivity.class, null, StockListActivity.class, Color.BLUE, "Portfolio"));
-        addTab(new ActivityTab(StockListActivity.class, PortfolioActivity.class, null, Color.CORAL, "Market"));
+        addTab(new ActivityTab(PortfolioActivity.class, null, StockMarketActivity.class, Color.BLUE, "Portfolio"));
+        addTab(new ActivityTab(StockMarketActivity.class, PortfolioActivity.class, null, Color.MAROON, "Market"));
 
         tabsView.pos().setGravity(Gravity.centerBottom);
         tabsView.setSeparator("   ");
@@ -118,7 +118,7 @@ public abstract class ExchangeTabActivity extends PageActivity {
                     return false;
 
                 openActivity(
-                        StockActivity.class,
+                        StockInfoActivity.class,
                         new Bundle().addExtra("stock", selected),
                         false);
                 return true;

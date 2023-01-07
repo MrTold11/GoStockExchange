@@ -25,7 +25,6 @@ public class StockLineView extends LineView implements Comparable<StockLineView>
     TextView priceDeltaPer = new TextView("?,?? %", null);
 
     public StockLineView(Stock stock) {
-        super(null);
         this.stock = stock;
 
         addView(tickerView).addView(priceValue).addView(priceValueSep)
@@ -33,7 +32,8 @@ public class StockLineView extends LineView implements Comparable<StockLineView>
         tickerView.setText(stock.getTicker());
         tickerView.setStyle(new Style()
                 .addAttribute(Attribute.INTENSITY_BOLD)
-                .setBackground(Color.GRAY));
+                .setBackground(Color.GRAY)
+                .setForeground(Color.WHITE));
     }
 
     public Style getTickerStyle() {

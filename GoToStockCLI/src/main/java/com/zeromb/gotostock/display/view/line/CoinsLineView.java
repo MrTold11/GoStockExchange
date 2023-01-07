@@ -16,10 +16,9 @@ public class CoinsLineView extends LineView {
     GotoCoin coin;
 
     TextView nameView = new TextView("Balance:", null);
-    TextView priceValue = new TextView("xxx,xx GTB", null);
+    TextView priceValue = new TextView("???,?? GTB", null);
 
     public CoinsLineView(GotoCoin coin) {
-        super(null);
         this.coin = coin;
 
         addView(nameView).addView(priceValue);
