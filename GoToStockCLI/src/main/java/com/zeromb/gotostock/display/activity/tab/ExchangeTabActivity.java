@@ -3,9 +3,11 @@ package com.zeromb.gotostock.display.activity.tab;
 import com.zeromb.gotostock.display.activity.PortfolioActivity;
 import com.zeromb.gotostock.display.activity.StockInfoActivity;
 import com.zeromb.gotostock.display.activity.StockMarketActivity;
+import com.zeromb.gotostock.display.activity.Updatable;
 import com.zeromb.gotostock.display.view.group.StockView;
 import com.zeromb.gotostock.display.view.line.LineView;
 import com.zeromb.gotostock.display.view.line.stock.StockLineView;
+import com.zeromb.gotostock.network.NetworkProvider;
 import com.zeromb.gotostock.obj.Stock;
 import com.zeromb.gotostock.obj.StockExchange;
 import ru.congas.core.application.Bundle;
@@ -17,15 +19,18 @@ import ru.congas.core.output.widgets.TextView;
 import ru.congas.core.output.widgets.properties.Gravity;
 import ru.congas.core.output.widgets.properties.WidgetSizeType;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Mr_Told
  */
-public abstract class ExchangeTabActivity extends PageActivity {
+public abstract class ExchangeTabActivity extends PageActivity implements Updatable {
 
-    protected static final StockExchange exchange = new StockExchange();
+    public static final StockExchange exchange = new StockExchange();
 
     private static final Map<Class<? extends ExchangeTabActivity>, ActivityTab> tabs = new HashMap<>();
 
@@ -54,13 +59,21 @@ public abstract class ExchangeTabActivity extends PageActivity {
         tabs.put(tab.clazz, tab);
     }
 
+    protected NetworkProvider network;
+
     protected TextView exchangeView, hintView;
     int pointer = 0;
     ActivityTab current;
 
     @Override
-    protected void onCreate(Bundle args) {
+    protected void onCreate(@Nullable Bundle args) {
         super.onCreate(args);
+
+        if (args != null)
+            network = (NetworkProvider) args.getObject("network-provider", NetworkProvider.class, null);
+
+        if (network == null)
+            throw new RuntimeException("Exchange tab activity open without Network Provider argument");
 
         current = tabs.get(getClass());
         if (current == null)
@@ -90,41 +103,74 @@ public abstract class ExchangeTabActivity extends PageActivity {
     }
 
     @Override
+    protected void onResume(@Nullable Bundle extra) {
+        super.onResume(extra);
+        network.resubscribeStocks(
+                getStockView().getStockViews()
+                        .stream().map(StockLineView::getStock)
+                        .collect(Collectors.toSet())
+        );
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        network.resubscribeStocks();
+    }
+
+    @Override
     public boolean handle(KeyPressed event) {
         switch (event.getDefinedKey()) {
-            case LEFT:
+            case LEFT -> {
                 if (current.leftClazz != null)
-                    openActivity(current.leftClazz, null, true);
+                    openActivity(
+                            current.leftClazz,
+                            new Bundle()
+                                    .addExtra("network-provider", network),
+                            true);
+
                 return true;
-            case RIGHT:
-                if (current.rightClazz != null)
-                    openActivity(current.rightClazz, null, true);
+            }
+            case RIGHT -> {
+                if (current.rightClazz != null) {
+                    openActivity(
+                            current.rightClazz,
+                            new Bundle()
+                                    .addExtra("network-provider", network),
+                            true);
+                }
                 return true;
-            case UP:
+            }
+            case UP -> {
                 if (pointer == 0)
                     return true;
                 pointer--;
                 updatePointer();
                 return true;
-            case DOWN:
+            }
+            case DOWN -> {
                 if (pointer == getStockView().getStockViews().size() - 1)
                     return true;
                 pointer++;
                 updatePointer();
                 return true;
-            case ENTER:
+            }
+            case ENTER -> {
                 Stock selected = getSelectedStock();
                 if (selected == null)
                     return false;
-
                 openActivity(
                         StockInfoActivity.class,
-                        new Bundle().addExtra("stock", selected),
+                        new Bundle()
+                                .addExtra("stock", selected)
+                                .addExtra("network-provider", network),
                         false);
                 return true;
-            case ESCAPE:
+            }
+            case ESCAPE -> {
                 closeActivity();
                 return true;
+            }
         }
         return false;
     }
@@ -174,4 +220,11 @@ public abstract class ExchangeTabActivity extends PageActivity {
 
     protected abstract StockView<? extends StockLineView> getStockView();
 
+    @Override
+    public void updateActivity() {
+        runOnUiThread(() -> {
+            getStockView().update();
+            render();
+        });
+    }
 }

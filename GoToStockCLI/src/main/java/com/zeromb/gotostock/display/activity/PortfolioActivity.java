@@ -31,6 +31,8 @@ public class PortfolioActivity extends ExchangeTabActivity {
 
         setDayDelta(dayDelta);
         render();
+
+        network.updatePortfolio();
     }
 
     @Override
@@ -53,9 +55,15 @@ public class PortfolioActivity extends ExchangeTabActivity {
         PortfolioActivity.dayDelta = dayDelta;
         totalView.setDayDelta(dayDelta);
         portfolioView.setDayDelta(dayDelta);
-        totalView.update();
-        portfolioView.update();
-        totalView.markDirty();
+        updateActivity();
     }
 
+    @Override
+    public void updateActivity() {
+        runOnUiThread(() -> {
+            totalView.update();
+            totalView.markDirty();
+        });
+        super.updateActivity();
+    }
 }

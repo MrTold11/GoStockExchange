@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class StockExchange {
 
-    Map<String, Stock> stockMap = new TreeMap<>();
+    Map<String, Stock> stockMap = Collections.synchronizedMap(new TreeMap<>());
 
     Portfolio portfolio = new Portfolio();
 
@@ -34,8 +34,12 @@ public class StockExchange {
         portfolio.updateStocks(getStocks());
     }
 
+    public void clearStocks() {
+        stockMap.clear();
+    }
+
     public void addStock(Stock stock) {
-        stockMap.put(stock.getName(), stock);
+        stockMap.put(stock.getISIN(), stock);
     }
 
     public Set<Stock> findStocks(String query) {
@@ -45,6 +49,10 @@ public class StockExchange {
                 result.add(s);
         }
         return result;
+    }
+
+    public Stock getStockByISIN(String ISIN) {
+        return stockMap.get(ISIN);
     }
 
     public Collection<Stock> getStocks() {

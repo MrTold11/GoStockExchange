@@ -17,6 +17,7 @@ public class Portfolio {
     }
 
     public void updateStocks(Collection<Stock> all) {
+        stocks.clear();
         for (Stock s : all) {
             if (s.getAmount() > 0)
                 stocks.add(s);
