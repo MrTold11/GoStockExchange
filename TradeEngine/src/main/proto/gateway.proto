@@ -15,7 +15,7 @@ service DispatcherGateway {
 message Empty {}
 
 message ISIN {
-  string ISIN = 1;
+  string isin = 1;
 }
 
 message StockPrice {
@@ -23,7 +23,7 @@ message StockPrice {
 }
 
 message Asset {
-  string ISIN = 1;
+  string isin = 1;
   int32 amount = 2;
   double price = 3;
 }

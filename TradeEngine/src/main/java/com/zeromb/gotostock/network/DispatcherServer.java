@@ -82,13 +82,13 @@ public class DispatcherServer {
 
         @Override
         public void getCurrentPrice(Gateway.ISIN request, StreamObserver<Gateway.StockPrice> responseObserver) {
-            responseObserver.onNext(dispatcher.getCurrentPrice(request.getISIN()));
+            responseObserver.onNext(dispatcher.getCurrentPrice(request.getIsin()));
             responseObserver.onCompleted();
         }
 
         @Override
         public void getOpeningPrice(Gateway.ISIN request, StreamObserver<Gateway.StockPrice> responseObserver) {
-            responseObserver.onNext(dispatcher.getOpeningPrice(request.getISIN()));
+            responseObserver.onNext(dispatcher.getOpeningPrice(request.getIsin()));
             responseObserver.onCompleted();
         }
 

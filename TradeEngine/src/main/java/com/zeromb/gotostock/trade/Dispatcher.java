@@ -53,7 +53,7 @@ public class Dispatcher {
 
     public void placeOrder(Gateway.Order order) {
         Order order1 = new Order(order,
-                stockMap.get(order.getAsset().getISIN()));
+                stockMap.get(order.getAsset().getIsin()));
 
         if (order1.getStock() == null) {
             denyOrder(order1, DenyReason.STOCK_NOT_FOUND);
@@ -86,7 +86,7 @@ public class Dispatcher {
                             .setOrderId(order.getTimestamp())
                             .setIsBuy(order.isBuy())
                             .setAsset(Gateway.Asset.newBuilder()
-                                    .setISIN(order.getISIN())
+                                    .setIsin(order.getISIN())
                                     .setAmount(order.getLeftAmount())
                                     .setPrice(order.getPrice())
                                     .build())
@@ -116,7 +116,7 @@ public class Dispatcher {
                             .setOrderId(order.getTimestamp())
                             .setIsBuy(order.isBuy())
                             .setAsset(Gateway.Asset.newBuilder()
-                                    .setISIN(order.getISIN())
+                                    .setIsin(order.getISIN())
                                     .setAmount(order.getLeftAmount())
                                     .setPrice(order.getPrice())
                                     .build())

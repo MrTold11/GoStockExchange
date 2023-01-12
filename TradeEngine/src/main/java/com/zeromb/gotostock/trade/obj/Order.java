@@ -26,7 +26,7 @@ public class Order implements Comparable<Order> {
 
     public Order(Gateway.Order order, Stock stock) {
         this.uid = order.getToken();
-        this.ISIN = order.getAsset().getISIN();
+        this.ISIN = order.getAsset().getIsin();
         this.stock = stock;
         this.orderAmount = order.getAsset().getAmount();
         this.leftAmount = orderAmount;
