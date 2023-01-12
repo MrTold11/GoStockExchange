@@ -1,5 +1,4 @@
 .idea/
 .vscode/
-Gateway/protos/dispatcher.proto
 Gateway/services/__pycache__/
 Gateway/venv/
