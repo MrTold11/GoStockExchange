@@ -1,0 +1,32 @@
+syntax = "proto3";
+package front;
+import "base.proto";
+
+
+service FrontService {
+  rpc GetStocksList(base.Empty) returns (StocksList) {};
+  rpc GetCurrentPrice(base.ISIN) returns (base.StockPrice) {};
+  rpc GetOpeningPrice(base.ISIN) returns (base.StockPrice) {};
+  rpc GetPortfolio(Token) returns (Portfolio) {};
+  rpc PlaceOrder(base.Order) returns (base.Empty) {};
+  rpc CancelOrder(base.CancelOrderRequest) returns (base.Empty) {};
+}
+
+message StocksList {
+  repeated Stock stocks = 1;
+}
+
+message Stock {
+  string isin = 1;
+  string ticker = 2;
+  string full_name = 3;
+  string about = 4;
+}
+
+message Token {
+  string token = 1;
+}
+
+message Portfolio {
+  repeated base.Asset assets = 1;
+}

@@ -2,6 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+import base_pb2 as base__pb2
 import dispatcher_pb2 as dispatcher__pb2
 
 
@@ -15,9 +16,9 @@ class GatewayReceiverStub(object):
             channel: A grpc.Channel.
         """
         self.SendOrderStatus = channel.unary_unary(
-                '/GatewayReceiver/SendOrderStatus',
+                '/dispatcher.GatewayReceiver/SendOrderStatus',
                 request_serializer=dispatcher__pb2.OrderStatus.SerializeToString,
-                response_deserializer=dispatcher__pb2.Empty.FromString,
+                response_deserializer=base__pb2.Empty.FromString,
                 )
 
 
@@ -36,11 +37,11 @@ def add_GatewayReceiverServicer_to_server(servicer, server):
             'SendOrderStatus': grpc.unary_unary_rpc_method_handler(
                     servicer.SendOrderStatus,
                     request_deserializer=dispatcher__pb2.OrderStatus.FromString,
-                    response_serializer=dispatcher__pb2.Empty.SerializeToString,
+                    response_serializer=base__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'GatewayReceiver', rpc_method_handlers)
+            'dispatcher.GatewayReceiver', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -59,9 +60,9 @@ class GatewayReceiver(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/GatewayReceiver/SendOrderStatus',
+        return grpc.experimental.unary_unary(request, target, '/dispatcher.GatewayReceiver/SendOrderStatus',
             dispatcher__pb2.OrderStatus.SerializeToString,
-            dispatcher__pb2.Empty.FromString,
+            base__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -76,24 +77,24 @@ class DispatcherGatewayStub(object):
             channel: A grpc.Channel.
         """
         self.GetCurrentPrice = channel.unary_unary(
-                '/DispatcherGateway/GetCurrentPrice',
-                request_serializer=dispatcher__pb2.ISIN.SerializeToString,
-                response_deserializer=dispatcher__pb2.StockPrice.FromString,
+                '/dispatcher.DispatcherGateway/GetCurrentPrice',
+                request_serializer=base__pb2.ISIN.SerializeToString,
+                response_deserializer=base__pb2.StockPrice.FromString,
                 )
         self.GetOpeningPrice = channel.unary_unary(
-                '/DispatcherGateway/GetOpeningPrice',
-                request_serializer=dispatcher__pb2.ISIN.SerializeToString,
-                response_deserializer=dispatcher__pb2.StockPrice.FromString,
+                '/dispatcher.DispatcherGateway/GetOpeningPrice',
+                request_serializer=base__pb2.ISIN.SerializeToString,
+                response_deserializer=base__pb2.StockPrice.FromString,
                 )
         self.PlaceOrder = channel.unary_unary(
-                '/DispatcherGateway/PlaceOrder',
-                request_serializer=dispatcher__pb2.Order.SerializeToString,
-                response_deserializer=dispatcher__pb2.Empty.FromString,
+                '/dispatcher.DispatcherGateway/PlaceOrder',
+                request_serializer=base__pb2.Order.SerializeToString,
+                response_deserializer=base__pb2.Empty.FromString,
                 )
         self.CancelOrder = channel.unary_unary(
-                '/DispatcherGateway/CancelOrder',
-                request_serializer=dispatcher__pb2.CancelOrderRequest.SerializeToString,
-                response_deserializer=dispatcher__pb2.Empty.FromString,
+                '/dispatcher.DispatcherGateway/CancelOrder',
+                request_serializer=base__pb2.CancelOrderRequest.SerializeToString,
+                response_deserializer=base__pb2.Empty.FromString,
                 )
 
 
@@ -129,27 +130,27 @@ def add_DispatcherGatewayServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetCurrentPrice': grpc.unary_unary_rpc_method_handler(
                     servicer.GetCurrentPrice,
-                    request_deserializer=dispatcher__pb2.ISIN.FromString,
-                    response_serializer=dispatcher__pb2.StockPrice.SerializeToString,
+                    request_deserializer=base__pb2.ISIN.FromString,
+                    response_serializer=base__pb2.StockPrice.SerializeToString,
             ),
             'GetOpeningPrice': grpc.unary_unary_rpc_method_handler(
                     servicer.GetOpeningPrice,
-                    request_deserializer=dispatcher__pb2.ISIN.FromString,
-                    response_serializer=dispatcher__pb2.StockPrice.SerializeToString,
+                    request_deserializer=base__pb2.ISIN.FromString,
+                    response_serializer=base__pb2.StockPrice.SerializeToString,
             ),
             'PlaceOrder': grpc.unary_unary_rpc_method_handler(
                     servicer.PlaceOrder,
-                    request_deserializer=dispatcher__pb2.Order.FromString,
-                    response_serializer=dispatcher__pb2.Empty.SerializeToString,
+                    request_deserializer=base__pb2.Order.FromString,
+                    response_serializer=base__pb2.Empty.SerializeToString,
             ),
             'CancelOrder': grpc.unary_unary_rpc_method_handler(
                     servicer.CancelOrder,
-                    request_deserializer=dispatcher__pb2.CancelOrderRequest.FromString,
-                    response_serializer=dispatcher__pb2.Empty.SerializeToString,
+                    request_deserializer=base__pb2.CancelOrderRequest.FromString,
+                    response_serializer=base__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'DispatcherGateway', rpc_method_handlers)
+            'dispatcher.DispatcherGateway', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -168,9 +169,9 @@ class DispatcherGateway(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DispatcherGateway/GetCurrentPrice',
-            dispatcher__pb2.ISIN.SerializeToString,
-            dispatcher__pb2.StockPrice.FromString,
+        return grpc.experimental.unary_unary(request, target, '/dispatcher.DispatcherGateway/GetCurrentPrice',
+            base__pb2.ISIN.SerializeToString,
+            base__pb2.StockPrice.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -185,9 +186,9 @@ class DispatcherGateway(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DispatcherGateway/GetOpeningPrice',
-            dispatcher__pb2.ISIN.SerializeToString,
-            dispatcher__pb2.StockPrice.FromString,
+        return grpc.experimental.unary_unary(request, target, '/dispatcher.DispatcherGateway/GetOpeningPrice',
+            base__pb2.ISIN.SerializeToString,
+            base__pb2.StockPrice.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -202,9 +203,9 @@ class DispatcherGateway(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DispatcherGateway/PlaceOrder',
-            dispatcher__pb2.Order.SerializeToString,
-            dispatcher__pb2.Empty.FromString,
+        return grpc.experimental.unary_unary(request, target, '/dispatcher.DispatcherGateway/PlaceOrder',
+            base__pb2.Order.SerializeToString,
+            base__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -219,8 +220,8 @@ class DispatcherGateway(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/DispatcherGateway/CancelOrder',
-            dispatcher__pb2.CancelOrderRequest.SerializeToString,
-            dispatcher__pb2.Empty.FromString,
+        return grpc.experimental.unary_unary(request, target, '/dispatcher.DispatcherGateway/CancelOrder',
+            base__pb2.CancelOrderRequest.SerializeToString,
+            base__pb2.Empty.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
