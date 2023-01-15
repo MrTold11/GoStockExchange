@@ -11,35 +11,22 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
+import base_pb2 as base__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x64ispatcher.proto\"\x07\n\x05\x45mpty\"\x14\n\x04ISIN\x12\x0c\n\x04ISIN\x18\x01 \x01(\t\"\x1b\n\nStockPrice\x12\r\n\x05price\x18\x01 \x01(\x01\"4\n\x05\x41sset\x12\x0c\n\x04ISIN\x18\x01 \x01(\t\x12\x0e\n\x06\x61mount\x18\x02 \x01(\x05\x12\r\n\x05price\x18\x03 \x01(\x01\"W\n\x05Order\x12\r\n\x05token\x18\x01 \x01(\t\x12\x15\n\x05\x61sset\x18\x02 \x01(\x0b\x32\x06.Asset\x12\x18\n\x04type\x18\x03 \x01(\x0e\x32\n.OrderType\x12\x0e\n\x06is_buy\x18\x04 \x01(\x08\"5\n\x12\x43\x61ncelOrderRequest\x12\r\n\x05token\x18\x01 \x01(\t\x12\x10\n\x08order_id\x18\x02 \x01(\x04\"y\n\x0bOrderStatus\x12\r\n\x05token\x18\x01 \x01(\t\x12\x15\n\x05\x61sset\x18\x02 \x01(\x0b\x32\x06.Asset\x12\x0e\n\x06is_buy\x18\x03 \x01(\x08\x12\x10\n\x08order_id\x18\x04 \x01(\x03\x12\"\n\x0ctransactions\x18\x05 \x03(\x0b\x32\x0c.Transaction\",\n\x0bTransaction\x12\r\n\x05price\x18\x01 \x01(\x01\x12\x0e\n\x06\x61mount\x18\x02 \x01(\x05*3\n\tOrderType\x12\x0f\n\x0bUNSPECIFIED\x10\x00\x12\n\n\x06MARKET\x10\x01\x12\t\n\x05LIMIT\x10\x02\x32<\n\x0fGatewayReceiver\x12)\n\x0fSendOrderStatus\x12\x0c.OrderStatus\x1a\x06.Empty\"\x00\x32\xb3\x01\n\x11\x44ispatcherGateway\x12\'\n\x0fGetCurrentPrice\x12\x05.ISIN\x1a\x0b.StockPrice\"\x00\x12\'\n\x0fGetOpeningPrice\x12\x05.ISIN\x1a\x0b.StockPrice\"\x00\x12\x1e\n\nPlaceOrder\x12\x06.Order\x1a\x06.Empty\"\x00\x12,\n\x0b\x43\x61ncelOrder\x12\x13.CancelOrderRequest\x1a\x06.Empty\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x64ispatcher.proto\x12\ndispatcher\x1a\nbase.proto\"\x89\x01\n\x0bOrderStatus\x12\r\n\x05token\x18\x01 \x01(\t\x12\x1a\n\x05\x61sset\x18\x02 \x01(\x0b\x32\x0b.base.Asset\x12\x0e\n\x06is_buy\x18\x03 \x01(\x08\x12\x10\n\x08order_id\x18\x04 \x01(\x03\x12-\n\x0ctransactions\x18\x05 \x03(\x0b\x32\x17.dispatcher.Transaction\",\n\x0bTransaction\x12\r\n\x05price\x18\x01 \x01(\x01\x12\x0e\n\x06\x61mount\x18\x02 \x01(\x05\x32L\n\x0fGatewayReceiver\x12\x39\n\x0fSendOrderStatus\x12\x17.dispatcher.OrderStatus\x1a\x0b.base.Empty\"\x00\x32\xdb\x01\n\x11\x44ispatcherGateway\x12\x31\n\x0fGetCurrentPrice\x12\n.base.ISIN\x1a\x10.base.StockPrice\"\x00\x12\x31\n\x0fGetOpeningPrice\x12\n.base.ISIN\x1a\x10.base.StockPrice\"\x00\x12(\n\nPlaceOrder\x12\x0b.base.Order\x1a\x0b.base.Empty\"\x00\x12\x36\n\x0b\x43\x61ncelOrder\x12\x18.base.CancelOrderRequest\x1a\x0b.base.Empty\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'dispatcher_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _ORDERTYPE._serialized_start=447
-  _ORDERTYPE._serialized_end=498
-  _EMPTY._serialized_start=20
-  _EMPTY._serialized_end=27
-  _ISIN._serialized_start=29
-  _ISIN._serialized_end=49
-  _STOCKPRICE._serialized_start=51
-  _STOCKPRICE._serialized_end=78
-  _ASSET._serialized_start=80
-  _ASSET._serialized_end=132
-  _ORDER._serialized_start=134
-  _ORDER._serialized_end=221
-  _CANCELORDERREQUEST._serialized_start=223
-  _CANCELORDERREQUEST._serialized_end=276
-  _ORDERSTATUS._serialized_start=278
-  _ORDERSTATUS._serialized_end=399
-  _TRANSACTION._serialized_start=401
-  _TRANSACTION._serialized_end=445
-  _GATEWAYRECEIVER._serialized_start=500
-  _GATEWAYRECEIVER._serialized_end=560
-  _DISPATCHERGATEWAY._serialized_start=563
-  _DISPATCHERGATEWAY._serialized_end=742
+  _ORDERSTATUS._serialized_start=45
+  _ORDERSTATUS._serialized_end=182
+  _TRANSACTION._serialized_start=184
+  _TRANSACTION._serialized_end=228
+  _GATEWAYRECEIVER._serialized_start=230
+  _GATEWAYRECEIVER._serialized_end=306
+  _DISPATCHERGATEWAY._serialized_start=309
+  _DISPATCHERGATEWAY._serialized_end=528
 # @@protoc_insertion_point(module_scope)

@@ -1,8 +1,7 @@
-from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 LIMIT: OrderType
@@ -49,41 +48,11 @@ class Order(_message.Message):
     type: OrderType
     def __init__(self, token: _Optional[str] = ..., asset: _Optional[_Union[Asset, _Mapping]] = ..., type: _Optional[_Union[OrderType, str]] = ..., is_buy: bool = ...) -> None: ...
 
-class Portfolio(_message.Message):
-    __slots__ = ["assets"]
-    ASSETS_FIELD_NUMBER: _ClassVar[int]
-    assets: _containers.RepeatedCompositeFieldContainer[Asset]
-    def __init__(self, assets: _Optional[_Iterable[_Union[Asset, _Mapping]]] = ...) -> None: ...
-
-class Stock(_message.Message):
-    __slots__ = ["about", "full_name", "isin", "ticker"]
-    ABOUT_FIELD_NUMBER: _ClassVar[int]
-    FULL_NAME_FIELD_NUMBER: _ClassVar[int]
-    ISIN_FIELD_NUMBER: _ClassVar[int]
-    TICKER_FIELD_NUMBER: _ClassVar[int]
-    about: str
-    full_name: str
-    isin: str
-    ticker: str
-    def __init__(self, isin: _Optional[str] = ..., ticker: _Optional[str] = ..., full_name: _Optional[str] = ..., about: _Optional[str] = ...) -> None: ...
-
 class StockPrice(_message.Message):
     __slots__ = ["price"]
     PRICE_FIELD_NUMBER: _ClassVar[int]
     price: float
     def __init__(self, price: _Optional[float] = ...) -> None: ...
-
-class StocksList(_message.Message):
-    __slots__ = ["stocks"]
-    STOCKS_FIELD_NUMBER: _ClassVar[int]
-    stocks: _containers.RepeatedCompositeFieldContainer[Stock]
-    def __init__(self, stocks: _Optional[_Iterable[_Union[Stock, _Mapping]]] = ...) -> None: ...
-
-class Token(_message.Message):
-    __slots__ = ["token"]
-    TOKEN_FIELD_NUMBER: _ClassVar[int]
-    token: str
-    def __init__(self, token: _Optional[str] = ...) -> None: ...
 
 class OrderType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = []

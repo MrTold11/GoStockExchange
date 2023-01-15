@@ -1,53 +1,22 @@
 syntax = "proto3";
+package dispatcher;
+import "base.proto";
+
 
 service GatewayReceiver {
-  rpc SendOrderStatus(OrderStatus) returns (Empty) {};
+  rpc SendOrderStatus(OrderStatus) returns (base.Empty) {};
 }
 
 service DispatcherGateway {
-  rpc GetCurrentPrice(ISIN) returns (StockPrice) {};
-  rpc GetOpeningPrice(ISIN) returns (StockPrice) {};
-  rpc PlaceOrder(Order) returns (Empty) {};
-  rpc CancelOrder(CancelOrderRequest) returns (Empty) {};
-}
-
-message Empty {}
-
-message ISIN {
-  string isin = 1;
-}
-
-message StockPrice {
-  double price = 1;
-}
-
-message Asset {
-  string isin = 1;
-  int32 amount = 2;
-  double price = 3;
-}
-
-message Order {
-  string token = 1;
-  Asset asset = 2;
-  OrderType type = 3;
-  bool is_buy = 4;
-}
-
-enum OrderType {
-  UNSPECIFIED = 0;
-  MARKET = 1;
-  LIMIT = 2;
-}
-
-message CancelOrderRequest {
-  string token = 1;
-  uint64 order_id = 2;
+  rpc GetCurrentPrice(base.ISIN) returns (base.StockPrice) {};
+  rpc GetOpeningPrice(base.ISIN) returns (base.StockPrice) {};
+  rpc PlaceOrder(base.Order) returns (base.Empty) {};
+  rpc CancelOrder(base.CancelOrderRequest) returns (base.Empty) {};
 }
 
 message OrderStatus {
   string token = 1;
-  Asset asset = 2;
+  base.Asset asset = 2;
   bool is_buy = 3;
   int64 order_id = 4;
   repeated Transaction transactions = 5;

@@ -2,8 +2,9 @@
 
 from concurrent import futures
 import grpc
-import FE_pb2, FE_pb2_grpc
-import dispatcher_pb2, dispatcher_pb2_grpc
+import base_pb2
+import front_pb2, front_pb2_grpc
+import dispatcher_pb2_grpc
 import psycopg2
 import asyncio
 
@@ -18,7 +19,7 @@ DB_PORT = "5433"
 DISPATCHER_HOST = "192.168.1.147"
 DISPATCHER_PORT = "50150"
 
-class AsyncFEServicer(FE_pb2_grpc.FEServiceServicer):
+class AsyncFrontServicer(front_pb2_grpc.FrontServiceServicer):
     def __init__(self, cur, stub:dispatcher_pb2_grpc.DispatcherGatewayStub) -> None:
         super().__init__()
         self.opening_prices = dict()
@@ -26,9 +27,9 @@ class AsyncFEServicer(FE_pb2_grpc.FEServiceServicer):
         self.issued_tokens = dict()
         self.cur = cur
         self.stub = stub
-        self.columns = []
+        self.db_columns = []
 
-        self.update_columns()
+        self.update_db_columns()
 
     def get_user_id(self, token):
         if token in self.issued_tokens:
@@ -36,7 +37,7 @@ class AsyncFEServicer(FE_pb2_grpc.FEServiceServicer):
         return token # will be removed when autorization done
         # return None 
     
-    def update_columns(self):
+    def update_db_columns(self):
         self.cur.execute("""
             SELECT column_name
             FROM information_schema.columns
@@ -44,70 +45,73 @@ class AsyncFEServicer(FE_pb2_grpc.FEServiceServicer):
         """)
         result = self.cur.fetchall()
         columns = [res[0] for res in result]
-        self.columns = columns + [columns[col] + "bc" for col in range(1, len(columns))]
+        self.db_columns = columns + [columns[col] + "bc" for col in range(1, len(columns))]
 
-    async def GetStocksList(self, request, context):
+    async def GetStocksList(self, request, context): # TODO replace hard-coded test stock with request to DB
         stocks_list = []
-        stock = FE_pb2.Stock(
+        stock = front_pb2.Stock(
                 isin="RUtest123456", 
                 ticker="TEST", 
                 full_name="TestStockNotForTrading", 
                 about="Our first transmitted stock"
                 )
         stocks_list.append(stock)
-        return FE_pb2.StocksList(stocks=stocks_list)
+        return front_pb2.StocksList(stocks=stocks_list)
     
     async def GetCurrentPrice(self, request, context):
         isin = request.isin
         if isin in self.current_prices:
-            return FE_pb2.StockPrice(price=self.current_prices[isin]) # updates when passing back to client OrderStatus
+            return base_pb2.StockPrice(price=self.current_prices[isin]) # updates when passing back to client OrderStatus
         
         cur_price = self.stub.GetCurrentPrice(request) # grpc request to dispatcher to get price of latest transaction involving stocks with given isin
-        self.current_prices[isin] = cur_price.price
+        self.current_prices[isin] = cur_price.price # storing price instead of cur_price because StockPrice isn't hashable
         return cur_price
         
     async def GetOpeningPrice(self, request, context):
-        if request in self.opening_prices:
-            return self.opening_prices[request] 
+        isin = request.isin
+        if isin in self.opening_prices:
+            return self.opening_prices[isin] 
         
-        opn_price = 0 # make SQL query to transactions history
-        self.opening_prices[request] = opn_price
+        opn_price = self.stub.GetOpeningPrice(request) # grpc dispatcher request (may do an SQL query to transactions history)
+        self.opening_prices[isin] = opn_price.price
         return opn_price
 
     async def GetPortfolio(self, request, context):
-        columns = ", ".join(self.columns) # semi-static
+        columns = ", ".join(self.db_columns) # semi-static
         user_id = self.get_user_id(request.token)
 
         if user_id is not None:
-            isin_amount = (len(self.columns) - 1) // 2 # semi-static
+            isin_amount = (len(self.db_columns) - 1) // 2 # semi-static
 
             self.cur.execute(f"SELECT {columns} FROM portfolios WHERE userid = %s", user_id)
             result = self.cur.fetchone()
             
-            assets = [FE_pb2.Asset(isin=self.columns[0], amount=1, price=result[0])]
+            assets = [base_pb2.Asset(isin=self.db_columns[0], amount=1, price=result[0])]
             for ind in range(1, isin_amount):
-                assets.append(FE_pb2.Asset(isin=self.columns[ind], amount=result[ind], price=result[ind + isin_amount]))
+                assets.append(base_pb2.Asset(isin=self.db_columns[ind], amount=result[ind], price=result[ind + isin_amount]))
             
-            portfolio = FE_pb2.Portfolio(assets=assets)
+            portfolio = front_pb2.Portfolio(assets=assets)
             
             return portfolio
         
-        return FE_pb2.Portfolio() # wrong token
+        return front_pb2.Portfolio() # wrong token
 
     async def PlaceOrder(self, request, context):
-        pass # redirect PlaceOrder to dispatcher via grpc
-
+        self.stub.PlaceOrder(request) # redirect PlaceOrder to dispatcher via grpc
+        return base_pb2.Empty()
+    
     async def CancelOrder(self, request, context):
         user_id = self.get_user_id(request.token)
         
         if user_id is not None:
-            pass # redirect CancelOrder to dispatcher via grpc to check if user with user_id has an order with request.order_id
+            self.stub.CancelOrder(request) # redirect CancelOrder to dispatcher (TODO replace token in request with uid)
+            return base_pb2.Empty()
 
     async def SendOrderStatus(self, request, context):
         print("Recieved OrderStatus from dispatcher: ", request)
-        return dispatcher_pb2.Empty()
+        return base_pb2.Empty()
 
-async def serve_FE():
+async def serve_front():
     conn = psycopg2.connect(dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT)
     cur = conn.cursor()
 
@@ -115,7 +119,7 @@ async def serve_FE():
     stub = dispatcher_pb2_grpc.DispatcherGatewayStub(channel)
 
     server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=10))
-    FE_pb2_grpc.add_FEServiceServicer_to_server(AsyncFEServicer(cur=cur, stub=stub), server)
+    front_pb2_grpc.add_FrontServiceServicer_to_server(AsyncFrontServicer(cur=cur, stub=stub), server)
     server.add_insecure_port(f"[::]:{GATEWAY_PORT}")
     
     await server.start()
@@ -128,6 +132,6 @@ async def serve_FE():
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(serve_FE())
+        loop.run_until_complete(serve_front())
     finally:
         loop.close()
