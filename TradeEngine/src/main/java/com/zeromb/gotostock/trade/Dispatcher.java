@@ -29,7 +29,6 @@ public class Dispatcher {
     private final Map<String, Stock> stockMap = new HashMap<>();
 
     private final Map<String, Gateway.StockPrice> openingPrices = new HashMap<>();
-    private final Gateway.StockPrice ZERO = Gateway.StockPrice.newBuilder().setPrice(0.0D).build();
 
     public Dispatcher(String gatewayIp, int gatewayPort) {
         tradeEngine = new TradeEngine(this);
@@ -138,19 +137,19 @@ public class Dispatcher {
         stock.setOpeningPrice(price);
 
         openingPrices.put(ISIN,
-                Gateway.StockPrice.newBuilder().setPrice(price).build());
+                Gateway.StockPrice.newBuilder().setIsin(ISIN).setPrice(price).build());
     }
 
     public Gateway.StockPrice getOpeningPrice(String ISIN) {
-        return openingPrices.getOrDefault(ISIN, ZERO);
+        return openingPrices.getOrDefault(ISIN,
+                Gateway.StockPrice.newBuilder().setIsin(ISIN).setPrice(0).build());
     }
 
     public Gateway.StockPrice getCurrentPrice(String ISIN) {
         Stock stock = stockMap.get(ISIN);
-        if (stock == null) return ZERO;
+        double price = stock == null ? 0 : stock.getPrice();
 
-        double price = stock.getPrice();
-        return Gateway.StockPrice.newBuilder().setPrice(price).build();
+        return Gateway.StockPrice.newBuilder().setIsin(ISIN).setPrice(price).build();
     }
 
     private static final AtomicLong prevTimestamp = new AtomicLong();

@@ -19,7 +19,8 @@ message ISIN {
 }
 
 message StockPrice {
-  double price = 1;
+  string isin = 1;
+  double price = 2;
 }
 
 message Asset {
