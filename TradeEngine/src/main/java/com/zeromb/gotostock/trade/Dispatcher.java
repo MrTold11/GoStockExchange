@@ -7,12 +7,10 @@ import com.zeromb.gotostock.trade.obj.Order;
 import com.zeromb.gotostock.trade.obj.Stock;
 import com.zeromb.gotostock.util.TransactionTable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -27,8 +25,9 @@ public class Dispatcher {
     ExecutorService executors = Executors.newFixedThreadPool(10);
 
     private final Map<String, Stock> stockMap = new HashMap<>();
-
     private final Map<String, Gateway.StockPrice> openingPrices = new HashMap<>();
+
+    protected final AtomicInteger QPS = new AtomicInteger();
 
     public Dispatcher(String gatewayIp, int gatewayPort) {
         tradeEngine = new TradeEngine(this);
@@ -46,11 +45,20 @@ public class Dispatcher {
 
         //prepare users
 
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                int a = QPS.getAndSet(0);
+                System.out.printf("Queries per second: %d\n", a);
+            }
+        }, 1000L, 1000L);
         //launch
         tradeEngine.start();
     }
 
     public void placeOrder(Gateway.Order order) {
+        QPS.getAndIncrement();
+
         Order order1 = new Order(order,
                 stockMap.get(order.getAsset().getIsin()));
 
@@ -73,7 +81,7 @@ public class Dispatcher {
     }
 
     public void cancelOrder(Gateway.CancelOrderRequest order) {
-
+        QPS.getAndIncrement();
     }
 
     private void denyOrder(Order order, DenyReason reason) {
@@ -141,11 +149,15 @@ public class Dispatcher {
     }
 
     public Gateway.StockPrice getOpeningPrice(String ISIN) {
+        QPS.getAndIncrement();
+
         return openingPrices.getOrDefault(ISIN,
                 Gateway.StockPrice.newBuilder().setIsin(ISIN).setPrice(0).build());
     }
 
     public Gateway.StockPrice getCurrentPrice(String ISIN) {
+        QPS.getAndIncrement();
+
         Stock stock = stockMap.get(ISIN);
         double price = stock == null ? 0 : stock.getPrice();
 
