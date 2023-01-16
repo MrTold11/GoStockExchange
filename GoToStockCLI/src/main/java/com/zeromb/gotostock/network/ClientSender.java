@@ -1,7 +1,7 @@
 package com.zeromb.gotostock.network;
 
+import com.zeromb.gotostock.FrontServiceGrpc;
 import com.zeromb.gotostock.Gateway;
-import com.zeromb.gotostock.FEServiceGrpc;
 import com.zeromb.gotostock.obj.Stock;
 import com.zeromb.gotostock.obj.StockExchange;
 import io.grpc.ManagedChannel;
@@ -13,7 +13,7 @@ import io.grpc.stub.StreamObserver;
  */
 public class ClientSender {
 
-    private final FEServiceGrpc.FEServiceStub asyncStub;
+    private final FrontServiceGrpc.FrontServiceStub asyncStub;
     private final Gateway.Empty EMPTY = Gateway.Empty.newBuilder().build();
 
     private final NetUpdateHandler updateHandler;
@@ -34,6 +34,12 @@ public class ClientSender {
                                 gs.getIsin(),
                                 gs.getAbout()));
             updateHandler.updateCurrentActivity();
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            //todo log error
+            t.printStackTrace();
         }
 
     };
@@ -83,7 +89,7 @@ public class ClientSender {
 
     public ClientSender(ManagedChannelBuilder<?> channelBuilder, NetUpdateHandler handler, StockExchange exchange) {
         ManagedChannel channel = channelBuilder.build();
-        asyncStub = FEServiceGrpc.newStub(channel);
+        asyncStub = FrontServiceGrpc.newStub(channel);
         this.updateHandler = handler;
         this.exchange = exchange;
     }

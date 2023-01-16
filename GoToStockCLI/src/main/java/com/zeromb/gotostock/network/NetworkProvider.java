@@ -28,8 +28,8 @@ public class NetworkProvider {
     String token;
 
     public NetworkProvider(String gatewayIp, NetUpdateHandler handler, StockExchange exchange) {
-        this.clientReceiver = new ClientReceiver(50051, handler);
-        this.clientSender = new ClientSender(gatewayIp, 50050, handler, exchange);
+        this.clientReceiver = new ClientReceiver(50050, handler);
+        this.clientSender = new ClientSender(gatewayIp, 50051, handler, exchange);
         this.exchange = exchange;
 
         priceUpdateTimer.scheduleAtFixedRate(priceUpdateTask, 1L, 500L);
@@ -59,8 +59,11 @@ public class NetworkProvider {
 
     public void updateStocksPrices() {
         synchronized (subscribedStock) {
-            for (Stock stock : subscribedStock)
+            for (Stock stock : subscribedStock) {
                 clientSender.updatePrice(stock);
+                if (stock.getOpenMarketPrice() <= 0)
+                    clientSender.getOpeningPrice(stock);
+            }
         }
     }
 

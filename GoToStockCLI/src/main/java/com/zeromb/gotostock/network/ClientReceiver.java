@@ -7,9 +7,7 @@ import io.grpc.InsecureServerCredentials;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
-import ru.congas.core.CongasCore;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**

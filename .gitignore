@@ -2,3 +2,4 @@
 .vscode/
 Gateway/services/__pycache__/
 Gateway/venv/
+/Gateway/Gateway.iml

@@ -1,11 +1,12 @@
 syntax = "proto3";
+package front;
 option java_package = "com.zeromb.gotostock";
 
 service CLIService {
   rpc ReceiveOrderStatus(OrderStatus) returns (Empty) {};
 }
 
-service FEService {
+service FrontService {
   rpc GetStocksList(Empty) returns (StocksList) {};
   rpc GetCurrentPrice(ISIN) returns (StockPrice) {};
   rpc GetOpeningPrice(ISIN) returns (StockPrice) {};

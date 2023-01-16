@@ -57,7 +57,7 @@ protobuf {
 jar {
     destinationDirectory.set(file(projectDir.toPath().toString() + '/CLI dir'))
 
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     //exclude ("log4j2.xml")
     manifest {
         attributes (

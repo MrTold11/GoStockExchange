@@ -24,13 +24,19 @@ public class GoToStockCLI extends CongasCore implements NetUpdateHandler {
 
     public GoToStockCLI() throws Exception {
         super();
-        setTitle("GoTo Stock Exchange CLI");
-        this.networkProvider = new NetworkProvider("localhost", this, ExchangeTabActivity.exchange);
-        openActivity(
-                LoginActivity.class,
-                new Bundle()
-                        .addExtra("network-provider", networkProvider),
-                null);
+
+        try {
+            setTitle("GoTo Stock Exchange CLI");
+            this.networkProvider = new NetworkProvider("192.168.0.101", this, ExchangeTabActivity.exchange);
+
+            openActivity(
+                    LoginActivity.class,
+                    new Bundle()
+                            .addExtra("network-provider", networkProvider),
+                    null);
+        } catch (Throwable t) {
+            terminalNotSupported();
+        }
     }
 
     @Override
@@ -42,6 +48,12 @@ public class GoToStockCLI extends CongasCore implements NetUpdateHandler {
     @Override
     protected void terminalNotSupported() {
         Runtime.getRuntime().removeShutdownHook(shutdownThread);
+
+        if (networkProvider == null) {
+            this.networkProvider = new NetworkProvider("192.168.0.101", this, ExchangeTabActivity.exchange);
+        }
+
+        networkProvider.updateStocks();
         //todo dumb terminal
     }
 
